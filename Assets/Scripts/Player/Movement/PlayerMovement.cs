@@ -3,6 +3,14 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
+    //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    // TODO:
+    // Create a system where going forwards/backwards compared to current pos doesn't need turning around
+    // Sometimes, the dot product won't be registered
+    // Change rotation to rotate fastest way rather than always the same way
+    //
+    //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
     [SerializeField] private PlayerBase _player;
     
     // Movement
@@ -43,18 +51,20 @@ public class PlayerMovement : MonoBehaviour
     }
     private void Move()
     {
-        // TODO:
-        // Add the feature for turning our vehicle before being able to move in that direction
-        // Perhaps using a Dot product of the forward/backward facing side of our tank, then take the direction we want to move
-        // and not allow it until a certain value. Perhaps fully, perhaps halfway? Figure out what's best
-        print(_moveAction.ReadValue<Vector2>());
-
+        Vector3 playerDirNormal = gameObject.transform.up.normalized;
+        Vector3 moveDirNormal = new Vector3(-_moveAction.ReadValue<Vector2>().y, 0, _moveAction.ReadValue<Vector2>().x).normalized;
+        
+        if (Vector3.Dot(playerDirNormal, moveDirNormal) > 1 || Vector3.Dot(playerDirNormal, moveDirNormal) < 1 )
+        {
+            gameObject.transform.Rotate(0, 0, _turnSpeed);
+            return;
+        }
         // For some reason, the negative Y value needs to be the X direction, the positive X value needs to be the Z, Y dir (up/down) is alway zero
         // Drag on the Rigidbody accounts for slowing down
         _moveDir.Set(-_moveAction.ReadValue<Vector2>().y, 0, _moveAction.ReadValue<Vector2>().x);
 
         // Adds force to the rigidbody based on the Vector2 of _moveAction.
-        _rb.AddForce(_moveDir * _moveSpeed * Time.deltaTime);
+        _rb.AddForce(_moveSpeed * Time.deltaTime * _moveDir);
     }
 
     private void Fire()
@@ -72,5 +82,15 @@ public class PlayerMovement : MonoBehaviour
     {
         _pControls.Controls.Disable();
     }
-    
+
+    private void OnDrawGizmos()
+    {
+        if (Application.isPlaying)
+        {
+            Debug.DrawRay(gameObject.transform.position, new Vector3(-_moveAction.ReadValue<Vector2>().y, 0, _moveAction.ReadValue<Vector2>().x) * 10);
+            Debug.DrawRay(gameObject.transform.position, -gameObject.transform.up * 10, Color.blue);
+            Debug.DrawRay(gameObject.transform.position, gameObject.transform.up * 10, Color.green);
+        }
+    }
+
 }
