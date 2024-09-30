@@ -221,9 +221,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _player: {fileID: 1837683950}
-  _turnSpeed: 0.15
+  _turnSpeed: 100
   _moveSpeed: 500
   _rb: {fileID: 0}
+  DotPScaler: 1000
 --- !u!136 &86736606
 CapsuleCollider:
   m_ObjectHideFlags: 0

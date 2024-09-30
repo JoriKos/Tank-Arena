@@ -1,15 +1,14 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-    //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    //=============================================================================
+    //
     // TODO:
     // Create a system where going forwards/backwards compared to current pos doesn't need turning around
-    // Sometimes, the dot product won't be registered
     // Change rotation to rotate fastest way rather than always the same way
-    //
-    //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     [SerializeField] private PlayerBase _player;
     
@@ -17,6 +16,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float _turnSpeed;
     [SerializeField] private float _moveSpeed;
     [SerializeField] private Rigidbody _rb;
+    [SerializeField] private int DotPScaler = 1000;
 
     private Vector3 _moveDir;
 
@@ -49,16 +49,49 @@ public class PlayerMovement : MonoBehaviour
         if (_fireAction.triggered)
             Fire();
     }
+
+    //---------------------------------------------------------------------------------------------------
+    // Purpose: 
+    // Moving and rotating the player
+    // If the tank is not facing the same way as the player wants to move, rotate the tank first.
+    //---------------------------------------------------------------------------------------------------
     private void Move()
     {
+        //Normalise vectors
         Vector3 playerDirNormal = gameObject.transform.up.normalized;
         Vector3 moveDirNormal = new Vector3(-_moveAction.ReadValue<Vector2>().y, 0, _moveAction.ReadValue<Vector2>().x).normalized;
-        
-        if (Vector3.Dot(playerDirNormal, moveDirNormal) > 1 || Vector3.Dot(playerDirNormal, moveDirNormal) < 1 )
+
+        Debug.Log(moveDirNormal);
+
+        float fDotP = Vector3.Dot(playerDirNormal, moveDirNormal);
+
+        // Due to a float's imprecision, it sometimes refuses to be acknowledged as 1 even with Mathf.Approximately
+        // Because of this, we have a scaler that we use so we have an int to work with. Without scaling, it turns into 0 or 1
+        int iDotP = Convert.ToInt32(fDotP * DotPScaler);
+
+        // We check the scaled dot product result against the scaler
+        if (iDotP != DotPScaler && iDotP != -DotPScaler)
         {
-            gameObject.transform.Rotate(0, 0, _turnSpeed);
+            float turnDir = 0;
+
+            // TODO:
+            // Edge cases for diagonal movement
+
+            // W = 1, S = -1
+            if (moveDirNormal.x != 0)
+                turnDir = -moveDirNormal.x;
+
+            // A = -1, D = 1
+            if (moveDirNormal.z != 0)
+                turnDir = moveDirNormal.z;
+
+            Debug.Log(turnDir);
+            
+            gameObject.transform.Rotate(0, 0, turnDir * Time.deltaTime * _turnSpeed);
+
             return;
         }
+
         // For some reason, the negative Y value needs to be the X direction, the positive X value needs to be the Z, Y dir (up/down) is alway zero
         // Drag on the Rigidbody accounts for slowing down
         _moveDir.Set(-_moveAction.ReadValue<Vector2>().y, 0, _moveAction.ReadValue<Vector2>().x);
