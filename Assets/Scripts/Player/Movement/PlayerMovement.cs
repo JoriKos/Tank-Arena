@@ -5,7 +5,6 @@ using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
 {
     //=============================================================================
-    //
     // TODO:
     // Create a system where going forwards/backwards compared to current pos doesn't need turning around
     // Change rotation to rotate fastest way rather than always the same way
@@ -35,7 +34,7 @@ public class PlayerMovement : MonoBehaviour
         _input = _player.Input;
 
         _moveAction = _input.actions["Move"];
-        _fireAction = _input.actions["Fire"];
+        _fireAction = _input.actions["Fire"]; //Move this
 
     }
 
@@ -58,35 +57,30 @@ public class PlayerMovement : MonoBehaviour
     private void Move()
     {
         //Normalise vectors
-        Vector3 playerDirNormal = gameObject.transform.up.normalized;
-        Vector3 moveDirNormal = new Vector3(-_moveAction.ReadValue<Vector2>().y, 0, _moveAction.ReadValue<Vector2>().x).normalized;
+        Vector3 playerDir = gameObject.transform.up;
+        //Mimic _moveDir.Set() we do below
+        Vector3 moveDir = new(-_moveAction.ReadValue<Vector2>().y, 0, _moveAction.ReadValue<Vector2>().x);
 
-        Debug.Log(moveDirNormal);
-
-        float fDotP = Vector3.Dot(playerDirNormal, moveDirNormal);
+        float fDotP = Vector3.Dot(playerDir.normalized, moveDir.normalized);
 
         // Due to a float's imprecision, it sometimes refuses to be acknowledged as 1 even with Mathf.Approximately
         // Because of this, we have a scaler that we use so we have an int to work with. Without scaling, it turns into 0 or 1
         int iDotP = Convert.ToInt32(fDotP * DotPScaler);
 
+        Debug.Log(Vector3.Distance(playerDir, moveDir));
+
         // We check the scaled dot product result against the scaler
         if (iDotP != DotPScaler && iDotP != -DotPScaler)
         {
-            float turnDir = 0;
 
-            // TODO:
-            // Edge cases for diagonal movement
+            //BUG: if they need to move to something that's in the middle, it switches between left and right constantly and ends up not moving
+            //CAUSE: one possible cause is that it moves in the wrong direction
+            //float turnDir = Vector3.Distance(playerDir, moveDir) < 1.5 ? 1 : -1;
+            float turnDir = 1;
+            //Just a failsafe in case they're equal
+            //if (Vector3.Distance(playerDir, moveDir) == Vector3.Distance(-playerDir, moveDir))
+             //   turnDir = 1;
 
-            // W = 1, S = -1
-            if (moveDirNormal.x != 0)
-                turnDir = -moveDirNormal.x;
-
-            // A = -1, D = 1
-            if (moveDirNormal.z != 0)
-                turnDir = moveDirNormal.z;
-
-            Debug.Log(turnDir);
-            
             gameObject.transform.Rotate(0, 0, turnDir * Time.deltaTime * _turnSpeed);
 
             return;
@@ -100,9 +94,10 @@ public class PlayerMovement : MonoBehaviour
         _rb.AddForce(_moveSpeed * Time.deltaTime * _moveDir);
     }
 
+    //Move this
     private void Fire()
     {
-        print("FIRE!");
+        //print("FIRE!");
     }
 
 
