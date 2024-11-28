@@ -67,20 +67,16 @@ public class PlayerMovement : MonoBehaviour
         // Because of this, we have a scaler that we use so we have an int to work with. Without scaling, it turns into 0 or 1
         int iDotP = Convert.ToInt32(fDotP * DotPScaler);
 
-        Debug.Log(Vector3.Distance(playerDir, moveDir));
 
         // We check the scaled dot product result against the scaler
         if (iDotP != DotPScaler && iDotP != -DotPScaler)
         {
 
             //BUG: if they need to move to something that's in the middle, it switches between left and right constantly and ends up not moving
-            //CAUSE: one possible cause is that it moves in the wrong direction
-            //float turnDir = Vector3.Distance(playerDir, moveDir) < 1.5 ? 1 : -1;
-            float turnDir = 1;
-            //Just a failsafe in case they're equal
-            //if (Vector3.Distance(playerDir, moveDir) == Vector3.Distance(-playerDir, moveDir))
-             //   turnDir = 1;
-
+            //CAUSE: direction is not dependent on where the player actually wants to go
+            //POS SOL: check which of the 2 vectors is closest, THEN check which side it's on (left/right) and set turnDir appropriately
+            float turnDir = Vector3.Distance(playerDir, moveDir) < 1.4 ? 1 : -1;
+            
             gameObject.transform.Rotate(0, 0, turnDir * Time.deltaTime * _turnSpeed);
 
             return;
