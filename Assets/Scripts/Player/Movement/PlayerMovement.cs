@@ -75,8 +75,17 @@ public class PlayerMovement : MonoBehaviour
             //BUG: if they need to move to something that's in the middle, it switches between left and right constantly and ends up not moving
             //CAUSE: direction is not dependent on where the player actually wants to go
             //POS SOL: check which of the 2 vectors is closest, THEN check which side it's on (left/right) and set turnDir appropriately
-            float turnDir = Vector3.Distance(playerDir, moveDir) < 1.4 ? 1 : -1;
-            
+            float turnDir;
+
+            if (Vector3.Angle(playerDir, moveDir) > Vector3.Angle(-playerDir, moveDir))
+            {
+                turnDir = -1;
+            }
+            else
+            {
+                turnDir = 1;
+            }
+
             gameObject.transform.Rotate(0, 0, turnDir * Time.deltaTime * _turnSpeed);
 
             return;
@@ -116,5 +125,4 @@ public class PlayerMovement : MonoBehaviour
             Debug.DrawRay(gameObject.transform.position, gameObject.transform.up * 10, Color.green);
         }
     }
-
 }
