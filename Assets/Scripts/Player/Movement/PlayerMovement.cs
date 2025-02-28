@@ -6,8 +6,7 @@ public class PlayerMovement : MonoBehaviour
 {
     //=============================================================================
     // TODO:
-    // Create a system where going forwards/backwards compared to current pos doesn't need turning around
-    // Change rotation to rotate fastest way rather than always the same way
+    // Implement this into networking
 
     [SerializeField] private PlayerBase _player;
     
@@ -71,21 +70,19 @@ public class PlayerMovement : MonoBehaviour
         // We check the scaled dot product result against the scaler
         if (iDotP != DotPScaler && iDotP != -DotPScaler)
         {
-
-            //BUG: if they need to move to something that's in the middle, it switches between left and right constantly and ends up not moving
-            //CAUSE: direction is not dependent on where the player actually wants to go
-            //POS SOL: check which of the 2 vectors is closest, THEN check which side it's on (left/right) and set turnDir appropriately
             float turnDir;
 
+            //Check which direction has an angle closest to the desired direction
             if (Vector3.Angle(playerDir, moveDir) > Vector3.Angle(-playerDir, moveDir))
-            {
-                turnDir = -1;
-            }
+                turnDir = Vector3.Cross(playerDir, moveDir).y;
             else
-            {
-                turnDir = 1;
-            }
+                turnDir = Vector3.Cross(-playerDir, moveDir).y;
 
+            //The Vector3.Cross output can range from -1 to 1, but we only need to know if it's negative or positive
+            //We change it to 1 if it's anything positive or 0, and to -1 if it's a negative number
+            turnDir = (turnDir >= 0) ? 1 : -1;
+
+            //Turn the bloody thing!
             gameObject.transform.Rotate(0, 0, turnDir * Time.deltaTime * _turnSpeed);
 
             return;
