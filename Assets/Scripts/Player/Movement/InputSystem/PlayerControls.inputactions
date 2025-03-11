@@ -2,7 +2,7 @@
     "name": "PlayerControls",
     "maps": [
         {
-            "name": "Controls",
+            "name": "TankControls",
             "id": "74332a37-cf77-47a4-896b-6eb7e78b8147",
             "actions": [
                 {
