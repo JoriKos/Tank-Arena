@@ -11,5 +11,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Arena.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 1
+    path: Assets/Scenes/Firing.unity
+    guid: 6015fc2aca24d7842965db6d7de0f757
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

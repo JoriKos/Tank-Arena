@@ -5,10 +5,6 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : NetworkBehaviour
 {
-    //=============================================================================
-    // TODO:
-    // Implement this into networking
-
     [SerializeField] private PlayerBase _player;
     
     // Movement
@@ -39,9 +35,8 @@ public class PlayerMovement : NetworkBehaviour
     {
         //If I am the owner, continue. Prevents other clients from controlling you (like 1984)
         if (!IsOwner)
-        {
             return;
-        }
+
         // This basically means "if any of the movement keys are held"
         if (_moveAction.inProgress)
             Move();
