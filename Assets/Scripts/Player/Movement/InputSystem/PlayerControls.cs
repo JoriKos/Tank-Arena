@@ -88,7 +88,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     ""name"": ""PlayerControls"",
     ""maps"": [
         {
-            ""name"": ""Controls"",
+            ""name"": ""TankControls"",
             ""id"": ""74332a37-cf77-47a4-896b-6eb7e78b8147"",
             ""actions"": [
                 {
@@ -226,15 +226,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     ],
     ""controlSchemes"": []
 }");
-        // Controls
-        m_Controls = asset.FindActionMap("Controls", throwIfNotFound: true);
-        m_Controls_Move = m_Controls.FindAction("Move", throwIfNotFound: true);
-        m_Controls_Fire = m_Controls.FindAction("Fire", throwIfNotFound: true);
+        // TankControls
+        m_TankControls = asset.FindActionMap("TankControls", throwIfNotFound: true);
+        m_TankControls_Move = m_TankControls.FindAction("Move", throwIfNotFound: true);
+        m_TankControls_Fire = m_TankControls.FindAction("Fire", throwIfNotFound: true);
     }
 
     ~@PlayerControls()
     {
-        UnityEngine.Debug.Assert(!m_Controls.enabled, "This will cause a leak and performance issues, PlayerControls.Controls.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_TankControls.enabled, "This will cause a leak and performance issues, PlayerControls.TankControls.Disable() has not been called.");
     }
 
     /// <summary>
@@ -307,34 +307,34 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         return asset.FindBinding(bindingMask, out action);
     }
 
-    // Controls
-    private readonly InputActionMap m_Controls;
-    private List<IControlsActions> m_ControlsActionsCallbackInterfaces = new List<IControlsActions>();
-    private readonly InputAction m_Controls_Move;
-    private readonly InputAction m_Controls_Fire;
+    // TankControls
+    private readonly InputActionMap m_TankControls;
+    private List<ITankControlsActions> m_TankControlsActionsCallbackInterfaces = new List<ITankControlsActions>();
+    private readonly InputAction m_TankControls_Move;
+    private readonly InputAction m_TankControls_Fire;
     /// <summary>
-    /// Provides access to input actions defined in input action map "Controls".
+    /// Provides access to input actions defined in input action map "TankControls".
     /// </summary>
-    public struct ControlsActions
+    public struct TankControlsActions
     {
         private @PlayerControls m_Wrapper;
 
         /// <summary>
         /// Construct a new instance of the input action map wrapper class.
         /// </summary>
-        public ControlsActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+        public TankControlsActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
         /// <summary>
-        /// Provides access to the underlying input action "Controls/Move".
+        /// Provides access to the underlying input action "TankControls/Move".
         /// </summary>
-        public InputAction @Move => m_Wrapper.m_Controls_Move;
+        public InputAction @Move => m_Wrapper.m_TankControls_Move;
         /// <summary>
-        /// Provides access to the underlying input action "Controls/Fire".
+        /// Provides access to the underlying input action "TankControls/Fire".
         /// </summary>
-        public InputAction @Fire => m_Wrapper.m_Controls_Fire;
+        public InputAction @Fire => m_Wrapper.m_TankControls_Fire;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
-        public InputActionMap Get() { return m_Wrapper.m_Controls; }
+        public InputActionMap Get() { return m_Wrapper.m_TankControls; }
         /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
         public void Enable() { Get().Enable(); }
         /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
@@ -342,9 +342,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
         public bool enabled => Get().enabled;
         /// <summary>
-        /// Implicitly converts an <see ref="ControlsActions" /> to an <see ref="InputActionMap" /> instance.
+        /// Implicitly converts an <see ref="TankControlsActions" /> to an <see ref="InputActionMap" /> instance.
         /// </summary>
-        public static implicit operator InputActionMap(ControlsActions set) { return set.Get(); }
+        public static implicit operator InputActionMap(TankControlsActions set) { return set.Get(); }
         /// <summary>
         /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
         /// </summary>
@@ -352,11 +352,11 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// <remarks>
         /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
         /// </remarks>
-        /// <seealso cref="ControlsActions" />
-        public void AddCallbacks(IControlsActions instance)
+        /// <seealso cref="TankControlsActions" />
+        public void AddCallbacks(ITankControlsActions instance)
         {
-            if (instance == null || m_Wrapper.m_ControlsActionsCallbackInterfaces.Contains(instance)) return;
-            m_Wrapper.m_ControlsActionsCallbackInterfaces.Add(instance);
+            if (instance == null || m_Wrapper.m_TankControlsActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_TankControlsActionsCallbackInterfaces.Add(instance);
             @Move.started += instance.OnMove;
             @Move.performed += instance.OnMove;
             @Move.canceled += instance.OnMove;
@@ -371,8 +371,8 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// <remarks>
         /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
         /// </remarks>
-        /// <seealso cref="ControlsActions" />
-        private void UnregisterCallbacks(IControlsActions instance)
+        /// <seealso cref="TankControlsActions" />
+        private void UnregisterCallbacks(ITankControlsActions instance)
         {
             @Move.started -= instance.OnMove;
             @Move.performed -= instance.OnMove;
@@ -383,12 +383,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         }
 
         /// <summary>
-        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="ControlsActions.UnregisterCallbacks(IControlsActions)" />.
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="TankControlsActions.UnregisterCallbacks(ITankControlsActions)" />.
         /// </summary>
-        /// <seealso cref="ControlsActions.UnregisterCallbacks(IControlsActions)" />
-        public void RemoveCallbacks(IControlsActions instance)
+        /// <seealso cref="TankControlsActions.UnregisterCallbacks(ITankControlsActions)" />
+        public void RemoveCallbacks(ITankControlsActions instance)
         {
-            if (m_Wrapper.m_ControlsActionsCallbackInterfaces.Remove(instance))
+            if (m_Wrapper.m_TankControlsActionsCallbackInterfaces.Remove(instance))
                 UnregisterCallbacks(instance);
         }
 
@@ -398,27 +398,27 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// <remarks>
         /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
         /// </remarks>
-        /// <seealso cref="ControlsActions.AddCallbacks(IControlsActions)" />
-        /// <seealso cref="ControlsActions.RemoveCallbacks(IControlsActions)" />
-        /// <seealso cref="ControlsActions.UnregisterCallbacks(IControlsActions)" />
-        public void SetCallbacks(IControlsActions instance)
+        /// <seealso cref="TankControlsActions.AddCallbacks(ITankControlsActions)" />
+        /// <seealso cref="TankControlsActions.RemoveCallbacks(ITankControlsActions)" />
+        /// <seealso cref="TankControlsActions.UnregisterCallbacks(ITankControlsActions)" />
+        public void SetCallbacks(ITankControlsActions instance)
         {
-            foreach (var item in m_Wrapper.m_ControlsActionsCallbackInterfaces)
+            foreach (var item in m_Wrapper.m_TankControlsActionsCallbackInterfaces)
                 UnregisterCallbacks(item);
-            m_Wrapper.m_ControlsActionsCallbackInterfaces.Clear();
+            m_Wrapper.m_TankControlsActionsCallbackInterfaces.Clear();
             AddCallbacks(instance);
         }
     }
     /// <summary>
-    /// Provides a new <see cref="ControlsActions" /> instance referencing this action map.
+    /// Provides a new <see cref="TankControlsActions" /> instance referencing this action map.
     /// </summary>
-    public ControlsActions @Controls => new ControlsActions(this);
+    public TankControlsActions @TankControls => new TankControlsActions(this);
     /// <summary>
-    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Controls" which allows adding and removing callbacks.
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "TankControls" which allows adding and removing callbacks.
     /// </summary>
-    /// <seealso cref="ControlsActions.AddCallbacks(IControlsActions)" />
-    /// <seealso cref="ControlsActions.RemoveCallbacks(IControlsActions)" />
-    public interface IControlsActions
+    /// <seealso cref="TankControlsActions.AddCallbacks(ITankControlsActions)" />
+    /// <seealso cref="TankControlsActions.RemoveCallbacks(ITankControlsActions)" />
+    public interface ITankControlsActions
     {
         /// <summary>
         /// Method invoked when associated input action "Move" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.

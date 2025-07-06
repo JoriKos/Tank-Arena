@@ -1,8 +1,9 @@
 using System;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : NetworkBehaviour
 {
     //=============================================================================
     // TODO:
@@ -24,28 +25,26 @@ public class PlayerMovement : MonoBehaviour
 
     // These inputs are a shortcut for "PlayerControls.ActionMap.InputAction"
     private InputAction _moveAction;
-    private InputAction _fireAction;
 
-    private void Awake()
+    //Start() function for networking
+    public override void OnNetworkSpawn()
     {
-        _pControls = new PlayerControls();
         _rb = _player.Rigidbody;
         _input = _player.Input;
 
         _moveAction = _input.actions["Move"];
-        _fireAction = _input.actions["Fire"]; //Move this
-
     }
 
     private void Update()
     {
+        //If I am the owner, continue. Prevents other clients from controlling you (like 1984)
+        if (!IsOwner)
+        {
+            return;
+        }
         // This basically means "if any of the movement keys are held"
         if (_moveAction.inProgress)
             Move();
-
-        // Triggered, libshart?
-        if (_fireAction.triggered)
-            Fire();
     }
 
     //---------------------------------------------------------------------------------------------------
@@ -96,21 +95,18 @@ public class PlayerMovement : MonoBehaviour
         _rb.AddForce(_moveSpeed * Time.deltaTime * _moveDir);
     }
 
-    //Move this
-    private void Fire()
-    {
-        //print("FIRE!");
-    }
-
-
     private void OnEnable()
     {
-        _pControls.Controls.Enable();
+        //Checks if null
+        //Should probably find a better way to implement this...
+        _pControls ??= new PlayerControls();
+
+        _pControls.TankControls.Enable();
     }
 
     private void OnDisable()
     {
-        _pControls.Controls.Disable();
+        _pControls.TankControls.Disable();
     }
 
     private void OnDrawGizmos()
