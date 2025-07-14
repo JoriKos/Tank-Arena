@@ -4,7 +4,6 @@ using UnityEngine.InputSystem;
 
 public class FireBullet : NetworkBehaviour
 {
-    [SerializeField] private float _speed;
     [SerializeField] private int _damage;
     [SerializeField] private ObjectPooling _pool;
     [SerializeField] private GameObject _target, _bulletOrigin;
@@ -53,14 +52,7 @@ public class FireBullet : NetworkBehaviour
 
     private void Fire()
     {
-        if (_target)
-        {
-            if (_target.activeInHierarchy)
-                transform.position = Vector3.MoveTowards(_bulletOrigin.transform.position, _target.transform.position, _speed * Time.deltaTime);
-            else
-                _pool.ReturnObject(gameObject);
-        }
-        else
-            _pool.ReturnObject(gameObject);
+        GameObject bullet = _pool.GetObject();
+        bullet.transform.SetPositionAndRotation(_bulletOrigin.transform.position, _bulletOrigin.transform.rotation);
     }
 }

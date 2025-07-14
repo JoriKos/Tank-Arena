@@ -1,9 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class ObjectPooling : MonoBehaviour
+public class ObjectPooling : NetworkBehaviour
 {
     [SerializeField] private GameObject _objectPool;
     [SerializeField] private Queue<GameObject> _objectPooler = new();
@@ -35,7 +36,7 @@ public class ObjectPooling : MonoBehaviour
         else
         {
             GameObject tObject = Instantiate(_objectPool);
-            tObject.transform.parent = transform;
+            //tObject.transform.parent = transform;
             _objectPooler.Enqueue(tObject);
             tObject.SetActive(setActiveImmediately);
             return tObject;
