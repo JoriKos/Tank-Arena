@@ -266,4 +266,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   _rb: {fileID: 1548648787158013693}
-  _speed: 5
+  _speed: 100

@@ -35,6 +35,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3375474200529284087}
+  - {fileID: 164899156658608234}
   m_Father: {fileID: 6816770401004603139}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!33 &8613252375302926804
@@ -167,6 +168,37 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
+--- !u!1 &7664239432791995642
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 164899156658608234}
+  m_Layer: 0
+  m_Name: BulletOrigin
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &164899156658608234
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7664239432791995642}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.70710635, y: -0, z: -0, w: 0.70710725}
+  m_LocalPosition: {x: -0.413, y: 1.6, z: -1.451}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5829094862497139278}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!1 &8591277941459543129
 GameObject:
   m_ObjectHideFlags: 0
@@ -182,6 +214,7 @@ GameObject:
   - component: {fileID: 1361866255514644018}
   - component: {fileID: 7328137017384871098}
   - component: {fileID: 5140871878783645125}
+  - component: {fileID: 3615056841230923519}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -363,6 +396,24 @@ MonoBehaviour:
   UseRigidBodyForMotion: 0
   AutoUpdateKinematicState: 1
   AutoSetKinematicOnDespawn: 1
+--- !u!114 &3615056841230923519
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8591277941459543129}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b404fa2f2b2b30043832faccde2889ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  _damage: 10
+  _fireSpeed: 2.5
+  _pool: {fileID: 0}
+  _bulletOrigin: {fileID: 7664239432791995642}
+  _player: {fileID: 3538501546077801642}
 --- !u!1001 &2977634287638432796
 PrefabInstance:
   m_ObjectHideFlags: 0

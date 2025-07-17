@@ -4,10 +4,13 @@ using UnityEngine.InputSystem;
 
 public class FireBullet : NetworkBehaviour
 {
-    [SerializeField] private int _damage;
+    [SerializeField] private float _damage, _fireSpeed;
     [SerializeField] private ObjectPooling _pool;
-    [SerializeField] private GameObject _target, _bulletOrigin;
+    [SerializeField] private GameObject _bulletOrigin;
     [SerializeField] private PlayerBase _player;
+
+    private bool _hasFired;
+    private float _fireTimer;
 
     // Controls
     private PlayerControls _pControls;
@@ -20,10 +23,11 @@ public class FireBullet : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         if(!_pool)
-            _pool = transform.parent.GetComponent<ObjectPooling>();
+            _pool = GameObject.Find("BulletPool").GetComponent<ObjectPooling>();
 
         _input = _player.Input;
         _fireAction = _input.actions["Fire"];
+        _hasFired = false;
     }
 
     private void Update()
@@ -34,10 +38,19 @@ public class FireBullet : NetworkBehaviour
 
         //transform.position += -transform.forward * Time.deltaTime * _speed;
 
-        if (_fireAction.IsPressed())
+        if (_hasFired)
+            _fireTimer += Time.deltaTime;
+
+        if(_fireTimer > _fireSpeed)
         {
-            Debug.Log("Fire!");
+            _hasFired = false;
+            _fireTimer = 0;
+        }
+
+        if (_fireAction.IsPressed() && !_hasFired)
+        {
             Fire();
+            _hasFired = true;
         }
     }
 

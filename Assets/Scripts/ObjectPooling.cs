@@ -13,12 +13,12 @@ public class ObjectPooling : NetworkBehaviour
     public int PoolStartSize { get { return _poolStartSize; } }
 
     // Game starts, create pool
-    private void Awake()
+    public override void OnNetworkSpawn()
     {
         for (int i = 0; i < _poolStartSize; i++)
         {
             GameObject obstacle = Instantiate(_objectPool);
-            obstacle.transform.parent = transform;
+            obstacle.transform.parent = this.transform;
             _objectPooler.Enqueue(obstacle);
             obstacle.SetActive(_activeOnStart);
         }
